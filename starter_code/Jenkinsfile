@@ -1,22 +1,22 @@
 pipeline {
-  agent {
-    docker {
-      image 'maven:3.8.3-jdk-11-slim'
-    }
+  agent any
+  tools {
+    maven 'maven-3.9.5'
+    jdk 'jdk11'
   }
   environment {
     PROJECT_DIR = 'nd035-c4-Security-and-DevOps'
+    REPO_URL = 'https://github.com/nbchicong/nd035-c4-Security-and-DevOps.git'
   }
   stages {
-    stage('Checkout') {
+    stage('Clone and Build') {
       steps {
-        checkout scm
-      }
-    }
-    stage('build') {
-      steps {
-        sh 'cd $PROJECT_DIR'
-        sh 'mvn -DskipTests clean package'
+        dir('nd035-c4-Security-and-DevOps') {
+          checkout scmGit(branches: [[name: '*/develop']], extensions: [], userRemoteConfigs: [[credentialsId: 'cf99c1ad-0939-4600-b5c1-9a88427f9d7e', url: env.REPO_URL]])
+          dir('starter_code') {
+            sh 'mvn -DskipTests clean package'
+          }
+        }
       }
     }
   }
