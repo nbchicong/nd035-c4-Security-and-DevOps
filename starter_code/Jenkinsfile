@@ -1,0 +1,23 @@
+pipeline {
+  agent {
+    docker {
+      image 'maven:3.8.3-jdk-11-slim'
+    }
+  }
+  environment {
+    PROJECT_DIR = 'nd035-c4-Security-and-DevOps'
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('build') {
+      steps {
+        sh 'cd $PROJECT_DIR'
+        sh 'mvn -DskipTests clean package'
+      }
+    }
+  }
+}
